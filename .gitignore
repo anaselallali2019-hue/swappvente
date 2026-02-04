@@ -1,0 +1,41 @@
+# Compiled class files
+*.class
+target/
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.classpath
+.project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Database
+*.db
+*.sqlite
+
+# Environment
+.env
+.env.local
+
+# Docker
+docker-compose.override.yml
+
+# Maven
+.mvn/
+mvnw
+mvnw.cmd
+
+# Test reports
+test-output/

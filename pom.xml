@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.shopstream</groupId>
+    <artifactId>shopstream-platform</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>ShopStream Platform</name>
+    <description>
+        Plateforme SaaS B2B2C multi-tenant pour marques créant leurs boutiques en ligne.
+        
+        Architecture: Microservices avec Event-Driven Architecture (EDA)
+        Patterns: Event Sourcing, CQRS, Saga, Outbox Pattern
+        Technologies: Spring Boot 3, Kafka, PostgreSQL, Redis, Elasticsearch
+    </description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.2.0</version>
+        <relativePath/>
+    </parent>
+
+    <modules>
+        <module>common</module>
+        <module>tenant-service</module>
+        <module>product-catalog-service</module>
+        <module>inventory-service</module>
+        <module>order-service</module>
+        <module>payment-service</module>
+        <module>pricing-service</module>
+        <module>recommendation-service</module>
+        <module>notification-service</module>
+        <module>delivery-tracking-service</module>
+        <module>analytics-service</module>
+        <module>api-gateway</module>
+    </modules>
+
+    <properties>
+        <java.version>21</java.version>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- Spring versions -->
+        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring-cloud.version>2023.0.0</spring-cloud.version>
+
+        <!-- Kafka versions -->
+        <kafka.version>3.6.0</kafka.version>
+        <kafka-streams.version>3.6.0</kafka-streams.version>
+        <confluent.version>7.5.0</confluent.version>
+
+        <!-- Database versions -->
+        <postgresql.version>42.7.0</postgresql.version>
+        <flyway.version>10.0.0</flyway.version>
+        <hibernate.version>6.4.0.Final</hibernate.version>
+        <hibernate-envers.version>6.4.0.Final</hibernate-envers.version>
+
+        <!-- Redis & Cache -->
+        <jedis.version>5.1.0</jedis.version>
+        <caffeine.version>3.1.8</caffeine.version>
+
+        <!-- Elasticsearch -->
+        <elasticsearch.version>8.11.0</elasticsearch.version>
+
+        <!-- Mapping & Validation -->
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <lombok.version>1.18.30</lombok.version>
+
+        <!-- Testing -->
+        <testcontainers.version>1.19.3</testcontainers.version>
+        <rest-assured.version>5.4.0</rest-assured.version>
+        <archunit.version>1.2.0</archunit.version>
+
+        <!-- Observability -->
+        <micrometer.version>1.12.0</micrometer.version>
+        <opentelemetry.version>1.32.0</opentelemetry.version>
+
+        <!-- Other -->
+        <jooq.version>3.18.7</jooq.version>
+        <drools.version>8.44.0.Final</drools.version>
+        <debezium.version>2.5.0.Final</debezium.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Spring Cloud -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Kafka -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-streams</artifactId>
+                <version>${kafka-streams.version}</version>
+            </dependency>
+
+            <!-- PostgreSQL -->
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${postgresql.version}</version>
+            </dependency>
+
+            <!-- MapStruct (POURQUOI: Génération automatique de mappers DTO->Entity, 
+                 évite code boilerplate manuel, type-safe, performance native) -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
+            </dependency>
+
+            <!-- Testcontainers (POURQUOI: Tests d'intégration avec vraies dépendances
+                 Docker, isolation complète, reproductibilité CI/CD) -->
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>testcontainers-bom</artifactId>
+                <version>${testcontainers.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <excludes>
+                            <exclude>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                            </exclude>
+                        </excludes>
+                    </configuration>
+                </plugin>
+
+                <!-- JOOQ Code Generation (POURQUOI: Type-safe SQL, génération depuis DB,
+                     meilleure performance que JPA pour bulk operations) -->
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${jooq.version}</version>
+                </plugin>
+
+                <!-- Flyway Migration (POURQUOI: Versioning DB, reproductibilité,
+                     rollback possible, collaboration équipe) -->
+                <plugin>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>${flyway.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <!-- Confluent Repository pour Kafka Schema Registry -->
+    <repositories>
+        <repository>
+            <id>confluent</id>
+            <url>https://packages.confluent.io/maven/</url>
+        </repository>
+    </repositories>
+
+</project>
