@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: product-catalog-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/productdb
+    username: product
+    password: product
+  jpa:
+    hibernate:
+      ddl-auto: none
+  elasticsearch:
+    uris: http://localhost:9200
+  kafka:
+    bootstrap-servers: localhost:9092
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8082

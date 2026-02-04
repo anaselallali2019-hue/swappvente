@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: pricing-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/pricingdb
+    username: pricing
+    password: pricing
+  jpa:
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: localhost:9092
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8086

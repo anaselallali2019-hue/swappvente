@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/paymentdb
+    username: payment
+    password: payment
+  jpa:
+    hibernate:
+      ddl-auto: none
+  kafka:
+    bootstrap-servers: localhost:9092
+  cache:
+    type: redis
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+server:
+  port: 8085
