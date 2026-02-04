@@ -1,0 +1,58 @@
+{
+  "analysis": {
+    "analyzer": {
+      "french_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "french_elision",
+          "french_stop",
+          "french_stemmer",
+          "french_synonym"
+        ]
+      },
+      "autocomplete_analyzer": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "asciifolding",
+          "autocomplete_filter"
+        ]
+      }
+    },
+    "filter": {
+      "french_elision": {
+        "type": "elision",
+        "articles": ["l", "m", "t", "qu", "n", "s", "j", "d", "c"]
+      },
+      "french_stop": {
+        "type": "stop",
+        "stopwords": "_french_"
+      },
+      "french_stemmer": {
+        "type": "stemmer",
+        "language": "french"
+      },
+      "french_synonym": {
+        "type": "synonym",
+        "synonyms": [
+          "tshirt, t-shirt, tee shirt",
+          "rouge, vermeil, écarlate, carmin",
+          "bleu, azur, cyan",
+          "vert, verdâtre",
+          "jeans, jean, denim",
+          "chaussure, soulier",
+          "pantalon, pants"
+        ]
+      },
+      "autocomplete_filter": {
+        "type": "edge_ngram",
+        "min_gram": 2,
+        "max_gram": 20
+      }
+    }
+  }
+}

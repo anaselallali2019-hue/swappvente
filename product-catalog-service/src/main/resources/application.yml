@@ -1,0 +1,107 @@
+spring:
+  application:
+    name: product-catalog-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5433/product_db
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 50
+        order_inserts: true
+        order_updates: true
+    open-in-view: false
+
+  # Elasticsearch Configuration
+  elasticsearch:
+    uris: http://localhost:9200
+    connection-timeout: 5s
+    socket-timeout: 30s
+
+  # Redis Cache
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 2000ms
+
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000 # 10 minutes
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        enable.idempotence: true
+        acks: all
+        compression.type: lz4
+    consumer:
+      group-id: product-catalog-consumer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.shopstream.*"
+    streams:
+      application-id: product-streams
+      properties:
+        default.key.serde: org.apache.kafka.common.streams.serdes.StringSerde
+        default.value.serde: org.apache.kafka.common.streams.serdes.StringSerde
+        # Exactly-once semantics
+        processing.guarantee: exactly_once_v2
+        # State store
+        state.dir: /tmp/kafka-streams
+
+  # Flyway Migration
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+
+server:
+  port: 8082
+  shutdown: graceful
+
+# Management endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Logging
+logging:
+  level:
+    com.shopstream: DEBUG
+    org.elasticsearch: INFO
+    org.apache.kafka: INFO
+
+# Custom properties
+product:
+  cache:
+    top-products-size: 100
+    ttl-minutes: 10
+  search:
+    max-results: 1000
+    default-page-size: 20
+  streams:
+    top-products-window-minutes: 60
